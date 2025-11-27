@@ -1,8 +1,38 @@
 import React from 'react';
-import { INSIGHT_STEPS, INSIGHT_TREND_DATA, INSIGHT_STARTUP_DATA } from '../constants';
+import { INSIGHT_STEPS, INSIGHT_TREND_DATA, INSIGHT_STARTUP_DATA, downloadAsFile } from '../constants';
 import { ArrowRight, Download } from 'lucide-react';
 
 const AboutSection: React.FC = () => {
+  const handleDownloadTrendReport = () => {
+    const content = `GLOBAL CHEMICAL AI TRENDS REPORT 2024
+    
+Overview:
+${INSIGHT_TREND_DATA.desc}
+
+Key Topics:
+${INSIGHT_TREND_DATA.items.map(item => `- ${item}`).join('\n')}
+
+---
+Prepared by IKARUS Strategy Team
+Confidential - Internal Use Only`;
+
+    downloadAsFile('Global_Chemical_AI_Trends_2024.txt', content);
+  };
+
+  const handleDownloadStartupInfo = (sectionTitle: string) => {
+    const content = `OPEN INNOVATION: ${sectionTitle}
+
+Description:
+${INSIGHT_STARTUP_DATA.desc}
+
+Section Focus:
+${sectionTitle}
+
+---
+ChemAI Knowledge Hub`;
+    downloadAsFile(`Startup_Briefing_${sectionTitle}.txt`, content);
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto px-4 pb-24 pt-8">
       {/* Header */}
@@ -49,9 +79,12 @@ const AboutSection: React.FC = () => {
             ))}
           </ul>
 
-          <button className="w-full py-3 bg-white border border-teal-200 text-teal-700 font-bold rounded-lg hover:bg-teal-50 transition-colors flex items-center justify-center gap-2 shadow-sm">
-            트렌드 리포트 보기
-            <ArrowRight size={16} />
+          <button 
+            onClick={handleDownloadTrendReport}
+            className="w-full py-3 bg-white border border-teal-200 text-teal-700 font-bold rounded-lg hover:bg-teal-50 transition-colors flex items-center justify-center gap-2 shadow-sm"
+          >
+            <Download size={18} />
+            트렌드 리포트 다운로드
           </button>
         </div>
 
@@ -64,9 +97,16 @@ const AboutSection: React.FC = () => {
 
           <div className="grid grid-cols-2 gap-4 mt-auto">
             {INSIGHT_STARTUP_DATA.sections.map((section, idx) => (
-              <div key={idx} className="bg-gray-50 rounded-xl p-5 text-center hover:bg-teal-50 transition-colors border border-gray-100">
-                <h4 className="text-lg font-bold text-gray-800 mb-1">{section.title}</h4>
-                <p className="text-xs text-gray-500">{section.desc}</p>
+              <div 
+                key={idx} 
+                onClick={() => handleDownloadStartupInfo(section.title)}
+                className="bg-gray-50 rounded-xl p-5 text-center hover:bg-teal-50 transition-colors border border-gray-100 cursor-pointer group"
+              >
+                <h4 className="text-lg font-bold text-gray-800 mb-1 group-hover:text-teal-700">{section.title}</h4>
+                <p className="text-xs text-gray-500 group-hover:text-teal-600 mb-2">{section.desc}</p>
+                <div className="flex justify-center text-teal-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Download size={14} />
+                </div>
               </div>
             ))}
           </div>

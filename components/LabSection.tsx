@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { BookOpen, CheckCircle2, Bot, Sparkles, Send, Loader2 } from 'lucide-react';
-import { LAB_TOPICS } from '../constants';
+import { BookOpen, CheckCircle2, Bot, Sparkles, Send, Loader2, Download } from 'lucide-react';
+import { LAB_TOPICS, downloadAsFile } from '../constants';
 import { ChatMessage, ChatRole } from '../types';
 import { sendMessageToGemini } from '../services/geminiService';
 
@@ -40,6 +40,20 @@ const LabSection: React.FC = () => {
     setIsLoading(false);
   };
 
+  const handleDownloadTopic = (topic: any) => {
+    const content = `AI LAB MATERIAL
+Topic: ${topic.title}
+Level: ${topic.badge}
+
+Description:
+${topic.desc}
+
+---
+ChemAI Knowledge Hub
+Educational Resource`;
+    downloadAsFile(`Lab_Topic_${topic.id}.txt`, content);
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto px-4 pb-24 pt-8">
       {/* Header */}
@@ -61,12 +75,12 @@ const LabSection: React.FC = () => {
 
           <div className="space-y-4">
             {LAB_TOPICS.map((topic) => (
-              <div key={topic.id} className="glass-card p-6 rounded-2xl hover:bg-white/70 transition-colors cursor-pointer group">
+              <div key={topic.id} className="glass-card p-6 rounded-2xl hover:bg-white/70 transition-colors group relative">
                 <div className="flex items-start gap-4">
                   <div className="mt-1">
                     <CheckCircle2 className="text-primary group-hover:scale-110 transition-transform" size={24} />
                   </div>
-                  <div>
+                  <div className="flex-1 pr-8">
                     <h4 className="font-bold text-gray-800 text-lg mb-1">{topic.title}</h4>
                     <p className="text-gray-600 text-sm mb-3">{topic.desc}</p>
                     <span className="inline-block px-3 py-1 bg-teal-100 text-teal-700 text-xs font-bold rounded-full">
@@ -74,6 +88,15 @@ const LabSection: React.FC = () => {
                     </span>
                   </div>
                 </div>
+                
+                {/* Download Button */}
+                <button 
+                  onClick={() => handleDownloadTopic(topic)}
+                  className="absolute top-6 right-6 text-gray-400 hover:text-teal-600 transition-colors p-1"
+                  title="강의 자료 다운로드"
+                >
+                  <Download size={20} />
+                </button>
               </div>
             ))}
           </div>

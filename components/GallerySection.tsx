@@ -1,8 +1,26 @@
 import React from 'react';
-import { USE_CASES } from '../constants';
-import { Microscope, ArrowRight } from 'lucide-react';
+import { USE_CASES, downloadAsFile } from '../constants';
+import { Microscope, ArrowRight, Download } from 'lucide-react';
 
 const GallerySection: React.FC = () => {
+  const handleDownloadNote = (item: any) => {
+    const content = `STUDY NOTE: ${item.title}
+Category: ${item.category}
+Date: ${new Date().toLocaleDateString()}
+
+Description:
+${item.desc}
+
+Data Summary:
+${item.chartData.map((d: any) => `- ${d.label}: ${d.value}`).join('\n')}
+
+---
+ChemAI Knowledge Hub
+Research Use Case Document`;
+    
+    downloadAsFile(`${item.noteId}_${item.title.replace(/\s+/g, '_')}.txt`, content);
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto px-4 pb-24 pt-8">
       <div className="text-center mb-10">
@@ -17,13 +35,15 @@ const GallerySection: React.FC = () => {
           {USE_CASES.map((item) => (
             <div key={item.id} className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:border-teal-200 transition-all">
               {/* Header Badges */}
-              <div className="flex items-center gap-3 mb-6">
-                <span className="px-3 py-1 bg-orange-100 text-orange-600 text-xs font-bold rounded-full uppercase tracking-wide">
-                  {item.noteId}
-                </span>
-                <span className="text-gray-500 text-sm font-medium">
-                  {item.category}
-                </span>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <span className="px-3 py-1 bg-orange-100 text-orange-600 text-xs font-bold rounded-full uppercase tracking-wide">
+                    {item.noteId}
+                  </span>
+                  <span className="text-gray-500 text-sm font-medium">
+                    {item.category}
+                  </span>
+                </div>
               </div>
 
               {/* Content */}
@@ -35,7 +55,7 @@ const GallerySection: React.FC = () => {
               </p>
 
               {/* Chart Visualization */}
-              <div className="space-y-4">
+              <div className="space-y-4 mb-8">
                 {item.chartData.map((data, idx) => (
                   <div key={idx} className="flex items-center gap-4">
                     <span className="w-24 text-right text-sm font-bold text-gray-500 truncate">
@@ -53,6 +73,17 @@ const GallerySection: React.FC = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+
+              {/* Footer Actions */}
+              <div className="pt-6 border-t border-gray-100 flex justify-end">
+                <button 
+                  onClick={() => handleDownloadNote(item)}
+                  className="flex items-center gap-2 text-sm font-bold text-teal-600 hover:text-teal-500 transition-colors"
+                >
+                  <Download size={16} />
+                  PDF 다운로드
+                </button>
               </div>
             </div>
           ))}

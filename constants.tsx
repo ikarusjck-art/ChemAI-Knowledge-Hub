@@ -284,3 +284,14 @@ export const INSIGHT_STARTUP_DATA = {
     { title: "Collaboration", desc: "협업 가능성 탐색" }
   ]
 };
+
+// Utility function to download content as a file
+export const downloadAsFile = (filename: string, content: string) => {
+  const element = document.createElement('a');
+  const file = new Blob([content], {type: 'text/plain'});
+  element.href = URL.createObjectURL(file);
+  element.download = filename;
+  document.body.appendChild(element); // Required for this to work in FireFox
+  element.click();
+  document.body.removeChild(element);
+};

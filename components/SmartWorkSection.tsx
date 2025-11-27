@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { SMART_WORK_CARDS, AI_TOOLS } from '../constants';
-import { Sparkles, Bot, ArrowRight, Copy, Check } from 'lucide-react';
+import { SMART_WORK_CARDS, AI_TOOLS, downloadAsFile } from '../constants';
+import { Sparkles, Bot, ArrowRight, Copy, Check, Save } from 'lucide-react';
 import { generateSmartWorkContent } from '../services/geminiService';
 
 const SmartWorkSection: React.FC = () => {
@@ -31,6 +31,13 @@ const SmartWorkSection: React.FC = () => {
     navigator.clipboard.writeText(resultText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDownloadResult = () => {
+    if (!resultText) return;
+    const timestamp = new Date().toISOString().slice(0, 10);
+    const filename = `SmartWork_${activeTool.label}_${timestamp}.txt`;
+    downloadAsFile(filename, resultText);
   };
 
   return (
@@ -136,13 +143,23 @@ const SmartWorkSection: React.FC = () => {
           <div className="bg-white border-b border-gray-100 p-5 flex justify-between items-center">
              <h3 className="font-bold text-gray-800 text-lg">생성 결과</h3>
              {resultText && (
-               <button 
-                 onClick={handleCopy}
-                 className="flex items-center gap-1 text-xs text-gray-500 hover:text-teal-600 transition-colors"
-               >
-                 {copied ? <Check size={14} /> : <Copy size={14} />}
-                 {copied ? '복사됨' : '복사하기'}
-               </button>
+               <div className="flex items-center gap-3">
+                 <button 
+                   onClick={handleDownloadResult}
+                   className="flex items-center gap-1 text-xs text-gray-500 hover:text-teal-600 transition-colors"
+                   title="텍스트 파일로 저장"
+                 >
+                   <Save size={14} />
+                   TXT 저장
+                 </button>
+                 <button 
+                   onClick={handleCopy}
+                   className="flex items-center gap-1 text-xs text-gray-500 hover:text-teal-600 transition-colors"
+                 >
+                   {copied ? <Check size={14} /> : <Copy size={14} />}
+                   {copied ? '복사됨' : '복사하기'}
+                 </button>
+               </div>
              )}
           </div>
           
